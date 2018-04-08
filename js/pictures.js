@@ -24,6 +24,8 @@ var DESCRIPTIONS = [
   'Вот это тачка!'
 ];
 
+var photos = [];
+
 var getRandomElement = function (array) {
   return array[Math.floor(Math.random() * array.length)];
 };
@@ -54,7 +56,6 @@ var shuffleElements = function (array) {
 };
 
 var generatePhotos = function () {
-  var photos = [];
   var photosNames = shuffleElements(generateNumbersArray(PHOTOS_MIN_VALUE, PHOTOS_MAX_VALUE));
 
   for (var i = 0; i < ARRAY_PHOTOS_LENGTH; i++) {
@@ -65,8 +66,6 @@ var generatePhotos = function () {
       description: getRandomElement(DESCRIPTIONS)
     });
   }
-
-  return photos;
 };
 
 var createElement = function (tagName, className1, className2, text) {
@@ -107,7 +106,7 @@ var renderComments = function () {
   avatar.alt = 'Аватар комментатора фотографии';
   avatar.width = 35;
   avatar.height = 35;
-  commentsItem.prepend(avatar);
+  commentsItem.insertBefore(avatar, commentsItem.firstChild);
 
   return commentsItem;
 };
@@ -125,7 +124,7 @@ var addElementsOnPage = function (arg) {
 var showAllPhotos = function () {
   var allPhotos = document.querySelector('.pictures');
 
-  allPhotos.appendChild(addElementsOnPage(generatePhotos()));
+  allPhotos.appendChild(addElementsOnPage(photos));
 };
 
 var showBigPhoto = function (photo) {
@@ -142,5 +141,10 @@ var showBigPhoto = function (photo) {
   bigPhoto.classList.remove('hidden');
 };
 
-showAllPhotos();
-showBigPhoto(generatePhotos()[0]);
+var initPictures = function () {
+  generatePhotos();
+  showAllPhotos();
+  showBigPhoto(photos[0]);
+};
+
+initPictures();
