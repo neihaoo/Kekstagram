@@ -17,6 +17,9 @@ var HEAT_MAX_VALUE = 3;
 var RESIZE_MAX_VALUE = 100;
 var RESIZE_MIN_VALUE = 25;
 var RESIZE_STEP = 25;
+var HASHTAG_MIN_LENGTH = 2;
+var HASHTAG_MAX_LENGTH = 20;
+var HASHTAGS_MAX = 5;
 
 var COMMENTS = [
   'Всё отлично!',
@@ -49,6 +52,7 @@ var photoResizePlus = uploadPhotos.querySelector('.resize__control--plus');
 var photoResizeValue = uploadPhotos.querySelector('.resize__control--value');
 var bigPhotoClose = document.querySelector('.big-picture__cancel');
 var allPhotos = document.querySelector('.pictures');
+var hashTagsInput = uploadPhotos.querySelector('.text__hashtags');
 
 var onUploadPhotoEscPress = function (evt) {
   if (evt.keyCode !== ESC_KEYCODE) {
@@ -129,6 +133,7 @@ var createElement = function (tagName, className1, className2, text) {
   if (className2) {
     element.classList.add(className2);
   }
+
   if (text) {
     element.textContent = text;
   }
@@ -270,6 +275,53 @@ var getEffectValue = function (value) {
   return effectValue;
 };
 
+var validateHashTags = function () {
+  var hashTagsArray = hashTagsInput.value.toLowerCase().trim().split(' ');
+  var hashTagsCounts = {};
+
+  hashTagsInput.setCustomValidity('');
+  hashTagsInput.removeAttribute('style');
+
+  if (hashTagsInput.value.toLowerCase().trim() === '') {
+    return;
+  }
+
+  if (hashTagsArray.length > HASHTAGS_MAX) {
+    hashTagsInput.setCustomValidity('Количество хэш-тегов должно быть не больше ' + HASHTAGS_MAX);
+    hashTagsInput.setAttribute('style', 'border-color: #ff4d4d');
+
+    return;
+  }
+
+  for (var i = 0; i < hashTagsArray.length; i++) {
+    var j = hashTagsArray[i];
+
+    hashTagsCounts[j] = hashTagsCounts[j] >= 1 ? hashTagsCounts[j] + 1 : 1;
+
+    if (hashTagsCounts[j] > 2) {
+      hashTagsInput.setCustomValidity('Один и тот же хэш-тег не может быть использован дважды');
+      hashTagsInput.setAttribute('style', 'border-color: #ff4d4d');
+
+      return;
+    } else if (hashTagsArray[i][0] !== '#') {
+      hashTagsInput.setCustomValidity('Каждый хэш-тег должен начинаться с символа # (решётка)');
+      hashTagsInput.setAttribute('style', 'border-color: #ff4d4d');
+
+      return;
+    } else if (hashTagsArray[i].length < HASHTAG_MIN_LENGTH) {
+      hashTagsInput.setCustomValidity('Хэш-тег не может состоять только из одного символа # (решётка)');
+      hashTagsInput.setAttribute('style', 'border-color: #ff4d4d');
+
+      return;
+    } else if (hashTagsArray[i].length > HASHTAG_MAX_LENGTH) {
+      hashTagsInput.setCustomValidity('Хэш-тег должен состоять максимум из ' + HASHTAG_MAX_LENGTH + '-х символов');
+      hashTagsInput.setAttribute('style', 'border-color: #ff4d4d');
+
+      return;
+    }
+  }
+};
+
 uploadPhotosOpen.addEventListener('change', function () {
   showUploadPhoto();
 });
@@ -282,7 +334,6 @@ uploadPhotosClose.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
     hideUploadPhoto();
   }
-
 });
 
 photoResizeMinus.addEventListener('click', function () {
@@ -333,9 +384,14 @@ allPhotos.addEventListener('click', function (evt) {
   for (var i = 0; i < photos.length; i++) {
     if (photos[i].url === evt.target.attributes.src.value) {
       showBigPhoto(photos[i]);
+
       break;
     }
   }
+});
+
+hashTagsInput.addEventListener('input', function () {
+  validateHashTags();
 });
 
 initPictures();
