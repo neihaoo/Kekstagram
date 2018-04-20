@@ -20,6 +20,7 @@ var RESIZE_STEP = 25;
 var HASHTAGS_MIN_LENGTH = 2;
 var HASHTAGS_MAX_LENGTH = 20;
 var HASHTAGS_MAX_COUNT = 5;
+var EFFECTS_MAX_VALUE = 100;
 
 var COMMENTS = [
   'Всё отлично!',
@@ -39,14 +40,15 @@ var DESCRIPTIONS = [
 ];
 
 var photos = [];
-var currentEffectValue;
 var uploadPhotos = document.querySelector('.img-upload');
 var uploadPhotosOpen = uploadPhotos.querySelector('#upload-file');
 var uploadPhotosClose = uploadPhotos.querySelector('#upload-cancel');
 var previewPhoto = uploadPhotos.querySelector('.img-upload__preview img');
 var effectsList = uploadPhotos.querySelector('.effects__list');
+var effectValue = uploadPhotos.querySelector('.scale__value');
 var sliderPin = uploadPhotos.querySelector('.scale__pin');
-var sliderBar = uploadPhotos.querySelector('.img-upload__scale');
+var sliderBar = uploadPhotos.querySelector('.scale__line');
+var sliderLevel = uploadPhotos.querySelector('.scale__level');
 var photoResizeMinus = uploadPhotos.querySelector('.resize__control--minus');
 var photoResizePlus = uploadPhotos.querySelector('.resize__control--plus');
 var photoResizeValue = uploadPhotos.querySelector('.resize__control--value');
@@ -210,13 +212,34 @@ var hideBigPhoto = function () {
   document.removeEventListener('keydown', onBigPhotoEscPress);
 };
 
+var showPreviewPhoto = function () {
+  var file = uploadPhotosOpen.files[0];
+  var reader = new FileReader();
+
+  reader.addEventListener('load', function () {
+    var effectsPreview = effectsList.querySelectorAll('.effects__preview');
+
+    previewPhoto.src = reader.result;
+    for (var i = 0; i < effectsPreview.length; i++) {
+      effectsPreview[i].setAttribute('style', 'background-image: url(' + previewPhoto.src + ')');
+    }
+  });
+
+  if (file) {
+    reader.readAsDataURL(file);
+  }
+};
+
 var showUploadPhoto = function () {
-  sliderBar.classList.add('hidden');
+  showPreviewPhoto();
+
+  sliderBar.parentElement.classList.add('hidden');
   uploadPhotos.querySelector('.img-upload__overlay').classList.remove('hidden');
 
   effectsList.querySelector('#effect-none').checked = true;
   photoResizeValue.setAttribute('value', RESIZE_MAX_VALUE + '%');
   uploadPhotos.querySelector('.img-upload__resize').setAttribute('style', 'z-index: 1');
+  document.querySelector('body').classList.add('modal-open');
   document.addEventListener('keydown', onUploadPhotoEscPress);
 };
 
@@ -224,6 +247,7 @@ var hideUploadPhoto = function () {
   uploadPhotos.querySelector('.img-upload__overlay').classList.add('hidden');
 
   document.removeEventListener('keydown', onUploadPhotoEscPress);
+  document.querySelector('body').classList.remove('modal-open');
   previewPhoto.removeAttribute('class');
   uploadPhotosOpen.value = '';
 };
@@ -253,26 +277,18 @@ var getDefaultEffectValue = function (effect) {
 var changeEffectValue = function () {
   switch (previewPhoto.className) {
     case 'effects__preview--chrome':
-      return 'grayscale(' + currentEffectValue * CHROME_MAX_VALUE / 100 + ')';
+      return 'grayscale(' + effectValue.value * CHROME_MAX_VALUE / 100 + ')';
     case 'effects__preview--sepia':
-      return 'sepia(' + currentEffectValue * SEPIA_MAX_VALUE / 100 + ')';
+      return 'sepia(' + effectValue.value * SEPIA_MAX_VALUE / 100 + ')';
     case 'effects__preview--marvin':
-      return 'invert(' + currentEffectValue * MARVIN_MAX_VALUE + '%)';
+      return 'invert(' + effectValue.value * MARVIN_MAX_VALUE / 100 + '%)';
     case 'effects__preview--phobos':
-      return 'blur(' + currentEffectValue * PHOBOS_MAX_VALUE / 100 + 'px)';
+      return 'blur(' + effectValue.value * PHOBOS_MAX_VALUE / 100 + 'px)';
     case 'effects__preview--heat':
-      return 'brightness(' + currentEffectValue * HEAT_MAX_VALUE / 100 + ')';
+      return 'brightness(' + (effectValue.value * (HEAT_MAX_VALUE - 1) / 100 + 1) + ')';
     default:
       return 'effects__preview--none';
   }
-};
-
-var getEffectValue = function (value) {
-  var sliderWidth = uploadPhotos.querySelector('.scale__line').clientWidth;
-  var sliderPinPosition = value - (document.documentElement.clientWidth - sliderWidth) / 2 + (sliderPin.clientWidth / 2);
-  var effectValue = Math.round(sliderPinPosition * 100 / sliderWidth);
-
-  return effectValue;
 };
 
 var validateHashTags = function () {
@@ -360,21 +376,54 @@ photoResizePlus.addEventListener('click', function () {
 effectsList.addEventListener('click', function (evt) {
   if (evt.target.classList.contains('effects__radio')) {
     if (evt.target.value === 'none') {
-      sliderBar.classList.add('hidden');
+      sliderBar.parentElement.classList.add('hidden');
     } else {
-      sliderBar.classList.remove('hidden');
+      sliderBar.parentElement.classList.remove('hidden');
     }
 
     previewPhoto.removeAttribute('class');
     previewPhoto.classList.add('effects__preview--' + evt.target.value);
-    previewPhoto.style.filter = getDefaultEffectValue(evt.target.value);
+    previewPhoto.setAttribute('style', 'filter: ' + getDefaultEffectValue(evt.target.value));
+    sliderPin.setAttribute('style', 'left: ' + EFFECTS_MAX_VALUE + '%');
+    sliderLevel.setAttribute('style', 'width: ' + sliderPin.style.left);
+    effectValue.setAttribute('value', EFFECTS_MAX_VALUE);
   }
 });
 
 sliderPin.addEventListener('mousedown', function (evt) {
-  currentEffectValue = getEffectValue(evt.clientX);
-  uploadPhotos.querySelector('.scale__value').setAttribute('value', currentEffectValue);
-  previewPhoto.style.filter = changeEffectValue();
+  evt.preventDefault();
+
+  var sliderPinCoords = sliderPin.getBoundingClientRect();
+  var sliderBarCoords = sliderBar.getBoundingClientRect();
+  var shiftX = evt.pageX - (sliderPinCoords.left + sliderPinCoords.width / 2);
+
+  var onMouseMove = function (evtMove) {
+    var newCoords = evtMove.pageX - shiftX - sliderBarCoords.left;
+    var rightEdge = sliderBarCoords.width;
+
+    if (newCoords < 0) {
+      newCoords = 0;
+    }
+
+    if (newCoords > rightEdge) {
+      newCoords = rightEdge;
+    }
+
+    sliderPin.setAttribute('style', 'left: ' + Math.round(newCoords * 100 / sliderBarCoords.width) + '%');
+    sliderLevel.setAttribute('style', 'width: ' + sliderPin.style.left);
+    effectValue.setAttribute('value', Math.round(newCoords * 100 / sliderBarCoords.width));
+    previewPhoto.setAttribute('style', 'filter: ' + changeEffectValue());
+  };
+
+  var onMouseUp = function (evtUp) {
+    evtUp.preventDefault();
+
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
 });
 
 bigPhotoClose.addEventListener('click', function () {
