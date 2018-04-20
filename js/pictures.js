@@ -48,6 +48,7 @@ var effectsList = uploadPhotos.querySelector('.effects__list');
 var effectValue = uploadPhotos.querySelector('.scale__value');
 var sliderPin = uploadPhotos.querySelector('.scale__pin');
 var sliderBar = uploadPhotos.querySelector('.scale__line');
+var sliderLevel = uploadPhotos.querySelector('.scale__level');
 var photoResizeMinus = uploadPhotos.querySelector('.resize__control--minus');
 var photoResizePlus = uploadPhotos.querySelector('.resize__control--plus');
 var photoResizeValue = uploadPhotos.querySelector('.resize__control--value');
@@ -211,7 +212,27 @@ var hideBigPhoto = function () {
   document.removeEventListener('keydown', onBigPhotoEscPress);
 };
 
+var showPreviewPhoto = function () {
+  var file = uploadPhotosOpen.files[0];
+  var reader = new FileReader();
+
+  reader.addEventListener('load', function () {
+    var effectsPreview = effectsList.querySelectorAll('.effects__preview');
+
+    previewPhoto.src = reader.result;
+    for (var i = 0; i < effectsPreview.length; i++) {
+      effectsPreview[i].setAttribute('style', 'background-image: url(' + previewPhoto.src + ')');
+    }
+  });
+
+  if (file) {
+    reader.readAsDataURL(file);
+  }
+};
+
 var showUploadPhoto = function () {
+  showPreviewPhoto();
+
   sliderBar.parentElement.classList.add('hidden');
   uploadPhotos.querySelector('.img-upload__overlay').classList.remove('hidden');
 
@@ -264,7 +285,7 @@ var changeEffectValue = function () {
     case 'effects__preview--phobos':
       return 'blur(' + effectValue.value * PHOBOS_MAX_VALUE / 100 + 'px)';
     case 'effects__preview--heat':
-      return 'brightness(' + effectValue.value * HEAT_MAX_VALUE / 100 + ')';
+      return 'brightness(' + (effectValue.value * (HEAT_MAX_VALUE - 1) / 100 + 1) + ')';
     default:
       return 'effects__preview--none';
   }
@@ -364,7 +385,7 @@ effectsList.addEventListener('click', function (evt) {
     previewPhoto.classList.add('effects__preview--' + evt.target.value);
     previewPhoto.setAttribute('style', 'filter: ' + getDefaultEffectValue(evt.target.value));
     sliderPin.setAttribute('style', 'left: ' + EFFECTS_MAX_VALUE + '%');
-    sliderPin.nextElementSibling.setAttribute('style', 'width: ' + sliderPin.style.left);
+    sliderLevel.setAttribute('style', 'width: ' + sliderPin.style.left);
     effectValue.setAttribute('value', EFFECTS_MAX_VALUE);
   }
 });
@@ -389,7 +410,7 @@ sliderPin.addEventListener('mousedown', function (evt) {
     }
 
     sliderPin.setAttribute('style', 'left: ' + Math.round(newCoords * 100 / sliderBarCoords.width) + '%');
-    sliderPin.nextElementSibling.setAttribute('style', 'width: ' + sliderPin.style.left);
+    sliderLevel.setAttribute('style', 'width: ' + sliderPin.style.left);
     effectValue.setAttribute('value', Math.round(newCoords * 100 / sliderBarCoords.width));
     previewPhoto.setAttribute('style', 'filter: ' + changeEffectValue());
   };
