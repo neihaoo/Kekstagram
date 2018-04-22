@@ -47,10 +47,10 @@
   };
 
   window.util = {
-    randomElement: getRandomElement,
-    randomNumber: getRandomNumber,
-    numberArray: generateNumbersArray,
+    getRandomElement: getRandomElement,
+    getRandomNumber: getRandomNumber,
+    generateNumbersArray: generateNumbersArray,
     shuffleElements: shuffleElements,
-    element: createElement
+    createElement: createElement
   };
 })();

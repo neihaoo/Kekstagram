@@ -25,7 +25,7 @@
   };
 
   var renderAllPhotos = function () {
-    window.data.photosData();
+    window.data.getPhotosData();
     allPhotos.appendChild(preparePhotos(window.data.photos));
   };
 
@@ -38,7 +38,7 @@
 
     for (var i = 0; i < window.data.photos.length; i++) {
       if (window.data.photos[i].url === evt.target.attributes.src.value) {
-        window.bigPhoto(window.data.photos[i]);
+        window.showBigPhoto(window.data.photos[i]);
 
         break;
       }

@@ -46,7 +46,7 @@
 
   window.effects = {
     maxValue: EFFECTS_MAX_VALUE,
-    defaultValue: getDefaultEffectValue,
+    getDefaultValue: getDefaultEffectValue,
     changeEffects: changeEffectValue
   };
 })();

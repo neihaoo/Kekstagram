@@ -105,7 +105,7 @@
 
       previewPhoto.removeAttribute('class');
       previewPhoto.classList.add('effects__preview--' + evt.target.value);
-      previewPhoto.setAttribute('style', 'filter: ' + window.effects.defaultValue(evt.target.value));
+      previewPhoto.setAttribute('style', 'filter: ' + window.effects.getDefaultValue(evt.target.value));
       sliderPin.setAttribute('style', 'left: ' + window.effects.maxValue + '%');
       sliderLevel.setAttribute('style', 'width: ' + sliderPin.style.left);
       effectValue.setAttribute('value', window.effects.maxValue);
@@ -165,6 +165,6 @@
   });
 
   uploadPhotosSubmitButton.addEventListener('click', function () {
-    window.form.hashTags();
+    window.form.validateHashTags();
   });
 })();

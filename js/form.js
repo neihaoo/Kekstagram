@@ -58,6 +58,6 @@
   };
 
   window.form = {
-    hashTags: validateHashTags
+    validateHashTags: validateHashTags
   };
 })();

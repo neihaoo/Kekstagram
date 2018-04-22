@@ -20,10 +20,10 @@
   };
 
   var renderComments = function () {
-    var commentsItem = window.util.element('li', 'social__comment', 'social__comment--text', window.util.randomElement(window.data.comments));
-    var avatar = window.util.element('img', 'social__picture');
+    var commentsItem = window.util.createElement('li', 'social__comment', 'social__comment--text', window.util.getRandomElement(window.data.comments));
+    var avatar = window.util.createElement('img', 'social__picture');
 
-    avatar.src = 'img/avatar-' + window.util.randomNumber(AVATAR_MIN_VALUE, AVATAR_MAX_VALUE) + '.svg';
+    avatar.src = 'img/avatar-' + window.util.getRandomNumber(AVATAR_MIN_VALUE, AVATAR_MAX_VALUE) + '.svg';
     avatar.alt = 'Аватар комментатора фотографии';
     avatar.width = 35;
     avatar.height = 35;
@@ -66,6 +66,6 @@
     hideBigPhoto();
   });
 
-  window.bigPhoto = showBigPhoto;
+  window.showBigPhoto = showBigPhoto;
 
 })();

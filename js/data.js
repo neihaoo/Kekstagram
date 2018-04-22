@@ -27,20 +27,20 @@
   var photos = [];
 
   var generatePhotos = function () {
-    var photosNames = window.util.shuffleElements(window.util.numberArray(PHOTOS_MIN_VALUE, PHOTOS_MAX_VALUE));
+    var photosNames = window.util.shuffleElements(window.util.generateNumbersArray(PHOTOS_MIN_VALUE, PHOTOS_MAX_VALUE));
 
     for (var i = 0; i < ARRAY_PHOTOS_LENGTH; i++) {
       photos.push({
         url: 'photos/' + photosNames[i] + '.jpg',
-        likes: window.util.randomNumber(LIKES_MIN_VALUE, LIKES_MAX_VALUE),
-        comments: window.util.randomElement(COMMENTS),
-        description: window.util.randomElement(DESCRIPTIONS)
+        likes: window.util.getRandomNumber(LIKES_MIN_VALUE, LIKES_MAX_VALUE),
+        comments: window.util.getRandomElement(COMMENTS),
+        description: window.util.getRandomElement(DESCRIPTIONS)
       });
     }
   };
 
   window.data = {
-    photosData: generatePhotos,
+    getPhotosData: generatePhotos,
     comments: COMMENTS,
     photos: photos
   };
