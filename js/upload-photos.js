@@ -20,6 +20,7 @@
   var photoResizeMinus = uploadPhotos.querySelector('.resize__control--minus');
   var photoResizePlus = uploadPhotos.querySelector('.resize__control--plus');
   var photoResizeValue = uploadPhotos.querySelector('.resize__control--value');
+  var form = uploadPhotos.querySelector('.img-upload__form');
 
   var onUploadPhotoEscPress = function (evt) {
     if (evt.keyCode !== ESC_KEYCODE) {
@@ -78,6 +79,8 @@
     previewPhoto.removeAttribute('class');
     previewPhoto.removeAttribute('style');
     uploadPhotos.querySelector('.text__hashtags').removeAttribute('style');
+    uploadPhotos.querySelector('.text__hashtags').value = '';
+    uploadPhotos.querySelector('.text__description').value = '';
     uploadPhotosOpen.value = '';
   };
 
@@ -166,5 +169,13 @@
 
   uploadPhotosSubmitButton.addEventListener('click', function () {
     window.form.validateHashTags();
+  });
+
+  form.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+
+    window.backend.save(new FormData(form), function () {
+      hideUploadPhoto();
+    }, window.utils.onPageShowError);
   });
 })();

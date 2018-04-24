@@ -9,34 +9,30 @@
 
     photoElement.querySelector('img').src = photo.url;
     photoElement.querySelector('.picture__stat--likes').textContent = photo.likes;
-    photoElement.querySelector('.picture__stat--comments').textContent = photo.comments.length;
+    photoElement.querySelector('.picture__stat--comments').textContent = photo.comments.length - 1;
 
     return photoElement;
   };
 
-  var preparePhotos = function (arr) {
+  var onPageLoad = function (photos) {
     var fragment = document.createDocumentFragment();
+    window.data.photos = photos;
 
-    for (var i = 0; i < arr.length; i++) {
-      fragment.appendChild(renderSmallPhoto(arr[i]));
+    for (var i = 0; i < window.data.photosCount; i++) {
+      fragment.appendChild(renderSmallPhoto(photos[i]));
     }
 
-    return fragment;
+    allPhotos.appendChild(fragment);
   };
 
-  var renderAllPhotos = function () {
-    window.data.getPhotosData();
-    allPhotos.appendChild(preparePhotos(window.data.photos));
-  };
-
-  renderAllPhotos();
+  window.backend.load(onPageLoad, window.utils.onPageShowError);
 
   allPhotos.addEventListener('click', function (evt) {
     if (evt.target.className !== 'picture__img') {
       return;
     }
 
-    for (var i = 0; i < window.data.photos.length; i++) {
+    for (var i = 0; i < window.data.photosCount; i++) {
       if (window.data.photos[i].url === evt.target.attributes.src.value) {
         window.showBigPhoto(window.data.photos[i]);
 
