@@ -16,6 +16,7 @@
 
   var onPageLoad = function (photos) {
     var fragment = document.createDocumentFragment();
+    window.data.photos = photos;
 
     for (var i = 0; i < window.data.photosCount; i++) {
       fragment.appendChild(renderSmallPhoto(photos[i]));
@@ -24,7 +25,7 @@
     allPhotos.appendChild(fragment);
   };
 
-  window.backend.load(onPageLoad, window.utils.onError);
+  window.backend.load(onPageLoad, window.utils.onPageShowError);
 
   allPhotos.addEventListener('click', function (evt) {
     if (evt.target.className !== 'picture__img') {

@@ -11,7 +11,6 @@
     xhr.addEventListener('load', function () {
       if (xhr.status === 200) {
         onLoad(xhr.response);
-        window.data.photos = xhr.response;
       } else {
         onError('Ошибка закгрузки данных. Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
       }

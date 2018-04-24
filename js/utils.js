@@ -34,7 +34,7 @@
   };
 
   window.utils = {
-    onError: onUserDialogError,
+    onPageShowError: onUserDialogError,
     getRandomNumber: getRandomNumber,
     createElement: createElement
   };

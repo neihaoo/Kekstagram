@@ -79,6 +79,8 @@
     previewPhoto.removeAttribute('class');
     previewPhoto.removeAttribute('style');
     uploadPhotos.querySelector('.text__hashtags').removeAttribute('style');
+    uploadPhotos.querySelector('.text__hashtags').value = '';
+    uploadPhotos.querySelector('.text__description').value = '';
     uploadPhotosOpen.value = '';
   };
 
@@ -174,6 +176,6 @@
 
     window.backend.save(new FormData(form), function () {
       hideUploadPhoto();
-    }, window.utils.onError);
+    }, window.utils.onPageShowError);
   });
 })();
