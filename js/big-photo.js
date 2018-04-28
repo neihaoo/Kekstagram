@@ -1,16 +1,17 @@
 'use strict';
 
 (function () {
-  var ESC_KEYCODE = 27;
-  var AVATAR_MIN_VALUE = 1;
-  var AVATAR_MAX_VALUE = 6;
+  var Avatar = {
+    MIN_VALUE: 1,
+    MAX_VALUE: 6
+  };
 
   var bigPhoto = document.querySelector('.big-picture');
   var bigPhotoComments = bigPhoto.querySelector('.social__comments');
   var bigPhotoClose = document.querySelector('.big-picture__cancel');
 
   var onBigPhotoEscPress = function (evt) {
-    if (evt.keyCode !== ESC_KEYCODE) {
+    if (evt.keyCode !== window.uploadPhotos.KeyCode.ESC) {
       return;
     }
 
@@ -25,7 +26,7 @@
     var commentsItem = window.utils.createElement('li', 'social__comment', 'social__comment--text', comment);
     var avatar = window.utils.createElement('img', 'social__picture');
 
-    avatar.src = 'img/avatar-' + window.utils.getRandomNumber(AVATAR_MIN_VALUE, AVATAR_MAX_VALUE) + '.svg';
+    avatar.src = 'img/avatar-' + window.utils.getRandomNumber(Avatar.MIN_VALUE, Avatar.MAX_VALUE) + '.svg';
     avatar.alt = 'Аватар комментатора фотографии';
     avatar.width = 35;
     avatar.height = 35;
@@ -75,6 +76,7 @@
     hideBigPhoto();
   });
 
-  window.showBigPhoto = showBigPhoto;
-
+  window.bigPhoto = {
+    showBigPhoto: showBigPhoto
+  };
 })();

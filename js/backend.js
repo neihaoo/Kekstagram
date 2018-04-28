@@ -1,4 +1,5 @@
 'use strict';
+
 (function () {
   var loadData = function (onLoad, onError) {
     var URL = 'https://js.dump.academy/kekstagram/data';
@@ -39,12 +40,12 @@
       if (xhr.status === 200) {
         onLoad(xhr.response);
       } else {
-        onError('Ошибка отправки данных. Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
+        onError();
       }
     });
 
     xhr.addEventListener('error', function () {
-      onError('Произошла ошибка отправки');
+      onError();
     });
 
     xhr.open('POST', URL);
