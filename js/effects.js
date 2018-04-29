@@ -10,21 +10,13 @@
 
   var effectValue = document.querySelector('.scale__value');
 
-  var getDefaultEffectValue = function (effect) {
-    switch (effect) {
-      case 'chrome':
-        return 'grayscale(' + CHROME_MAX_VALUE + ')';
-      case 'sepia':
-        return 'sepia(' + SEPIA_MAX_VALUE + ')';
-      case 'marvin':
-        return 'invert(' + MARVIN_MAX_VALUE + '%)';
-      case 'phobos':
-        return 'blur(' + PHOBOS_MAX_VALUE + 'px)';
-      case 'heat':
-        return 'brightness(' + HEAT_MAX_VALUE + ')';
-      default:
-        return 'none';
-    }
+  var defaultEffectValueMap = {
+    'chrome': 'grayscale(' + CHROME_MAX_VALUE + ')',
+    'sepia': 'sepia(' + SEPIA_MAX_VALUE + ')',
+    'marvin': 'invert(' + MARVIN_MAX_VALUE + '%)',
+    'phobos': 'blur(' + PHOBOS_MAX_VALUE + 'px)',
+    'heat': 'brightness(' + HEAT_MAX_VALUE + ')',
+    'none': 'none'
   };
 
   var changeEffectValue = function (photo) {
@@ -40,13 +32,13 @@
       case 'effects__preview--heat':
         return 'brightness(' + (effectValue.value * (HEAT_MAX_VALUE - 1) / 100 + 1) + ')';
       default:
-        return 'effects__preview--none';
+        return 'none';
     }
   };
 
   window.effects = {
     maxValue: EFFECTS_MAX_VALUE,
-    getDefaultValue: getDefaultEffectValue,
+    defaultValueEffect: defaultEffectValueMap,
     changeEffects: changeEffectValue
   };
 })();

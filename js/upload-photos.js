@@ -1,11 +1,16 @@
 'use strict';
 
 (function () {
-  var ESC_KEYCODE = 27;
-  var ENTER_KEYCODE = 13;
-  var RESIZE_MAX_VALUE = 100;
-  var RESIZE_MIN_VALUE = 25;
-  var RESIZE_STEP = 25;
+  var KeyCode = {
+    ESC: 27,
+    ENTER: 13
+  };
+
+  var Resize = {
+    MAX_VALUE: 100,
+    MIN_VALUE: 25,
+    STEP: 25
+  };
 
   var uploadPhotos = document.querySelector('.img-upload');
   var uploadPhotosOpen = uploadPhotos.querySelector('#upload-file');
@@ -23,7 +28,7 @@
   var form = uploadPhotos.querySelector('.img-upload__form');
 
   var onUploadPhotoEscPress = function (evt) {
-    if (evt.keyCode !== ESC_KEYCODE) {
+    if (evt.keyCode !== KeyCode.ESC) {
       return;
     }
 
@@ -37,6 +42,11 @@
       default:
         hideUploadPhoto();
     }
+  };
+
+  var onUploadShowError = function () {
+    hideUploadPhoto();
+    document.querySelector('.img-upload__message--error').classList.remove('hidden');
   };
 
   var showPreviewPhoto = function () {
@@ -65,7 +75,7 @@
     uploadPhotos.querySelector('.img-upload__overlay').classList.remove('hidden');
 
     effectsList.querySelector('#effect-none').checked = true;
-    photoResizeValue.setAttribute('value', RESIZE_MAX_VALUE + '%');
+    photoResizeValue.setAttribute('value', Resize.MAX_VALUE + '%');
     uploadPhotos.querySelector('.img-upload__resize').setAttribute('style', 'z-index: 1');
     document.querySelector('body').classList.add('modal-open');
     document.addEventListener('keydown', onUploadPhotoEscPress);
@@ -93,7 +103,7 @@
   });
 
   uploadPhotosClose.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === ENTER_KEYCODE) {
+    if (evt.keyCode === KeyCode.ENTER) {
       hideUploadPhoto();
     }
   });
@@ -108,10 +118,11 @@
 
       previewPhoto.removeAttribute('class');
       previewPhoto.classList.add('effects__preview--' + evt.target.value);
-      previewPhoto.setAttribute('style', 'filter: ' + window.effects.getDefaultValue(evt.target.value));
+      previewPhoto.setAttribute('style', 'filter: ' + window.effects.defaultValueEffect[evt.target.value]);
       sliderPin.setAttribute('style', 'left: ' + window.effects.maxValue + '%');
       sliderLevel.setAttribute('style', 'width: ' + sliderPin.style.left);
       effectValue.setAttribute('value', window.effects.maxValue);
+      photoResizeValue.setAttribute('value', Resize.MAX_VALUE + '%');
     }
   });
 
@@ -152,17 +163,17 @@
   });
 
   photoResizeMinus.addEventListener('click', function () {
-    if (parseInt(photoResizeValue.value, 10) > RESIZE_MIN_VALUE) {
-      photoResizeValue.setAttribute('value', parseInt(photoResizeValue.value, 10) - RESIZE_STEP + '%');
+    if (parseInt(photoResizeValue.value, 10) > Resize.MIN_VALUE) {
+      photoResizeValue.setAttribute('value', parseInt(photoResizeValue.value, 10) - Resize.STEP + '%');
       previewPhoto.setAttribute('style', 'transform: scale(' + parseInt(photoResizeValue.value, 10) / 100 + ')');
     }
   });
 
   photoResizePlus.addEventListener('click', function () {
-    if (parseInt(photoResizeValue.value, 10) < RESIZE_MAX_VALUE) {
-      photoResizeValue.setAttribute('value', parseInt(photoResizeValue.value, 10) + RESIZE_STEP + '%');
+    if (parseInt(photoResizeValue.value, 10) < Resize.MAX_VALUE) {
+      photoResizeValue.setAttribute('value', parseInt(photoResizeValue.value, 10) + Resize.STEP + '%');
       previewPhoto.setAttribute('style', 'transform: scale(' + parseInt(photoResizeValue.value, 10) / 100 + ')');
-    } else if (parseInt(photoResizeValue.value, 10) === RESIZE_MAX_VALUE) {
+    } else if (parseInt(photoResizeValue.value, 10) === Resize.MAX_VALUE) {
       previewPhoto.setAttribute('style', 'transform: none');
     }
   });
@@ -176,6 +187,10 @@
 
     window.backend.save(new FormData(form), function () {
       hideUploadPhoto();
-    }, window.utils.onPageShowError);
+    }, onUploadShowError);
   });
+
+  window.uploadPhotos = {
+    KeyCode: KeyCode
+  };
 })();

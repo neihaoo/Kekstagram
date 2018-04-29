@@ -1,9 +1,11 @@
 'use strict';
 
 (function () {
-  var HASHTAGS_MIN_LENGTH = 2;
-  var HASHTAGS_MAX_LENGTH = 20;
-  var HASHTAGS_MAX_COUNT = 5;
+  var HashTags = {
+    MIN_LENGTH: 2,
+    MAX_LENGTH: 20,
+    MAX_COUNT: 5
+  };
 
   var validateHashTags = function () {
     var hashTagsInput = document.querySelector('.img-upload .text__hashtags');
@@ -21,9 +23,8 @@
     if (hashTagsInput.value.toLowerCase().trim() === '') {
       return;
     }
-
-    if (hashTagsArray.length > HASHTAGS_MAX_COUNT) {
-      showErrorMessage('Количество хэш-тегов должно быть не больше ' + HASHTAGS_MAX_COUNT);
+    if (hashTagsArray.length > HashTags.MAX_COUNT) {
+      showErrorMessage('Количество хэш-тегов должно быть не больше ' + HashTags.MAX_COUNT);
 
       return;
     }
@@ -45,12 +46,12 @@
         showErrorMessage('Каждый хэш-тег должен начинаться с символа # (решётка)');
 
         return;
-      } else if (hashTagsArray[i].length < HASHTAGS_MIN_LENGTH) {
+      } else if (hashTagsArray[i].length < HashTags.MIN_LENGTH) {
         showErrorMessage('Хэш-тег не может состоять только из одного символа # (решётка)');
 
         return;
-      } else if (hashTagsArray[i].length > HASHTAGS_MAX_LENGTH) {
-        showErrorMessage('Хэш-тег должен состоять максимум из ' + HASHTAGS_MAX_LENGTH + '-х символов');
+      } else if (hashTagsArray[i].length > HashTags.MAX_LENGTH) {
+        showErrorMessage('Хэш-тег должен состоять максимум из ' + HashTags.MAX_LENGTH + '-х символов');
 
         return;
       }
