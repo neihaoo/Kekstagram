@@ -8,6 +8,38 @@
   var allPhotos = document.querySelector('.pictures');
   var sortFilters = document.querySelector('.img-filters');
 
+  var onPageLoad = function (data) {
+    data.length = ARRAY_PHOTOS_LENGTH;
+    photos = data;
+    renderPhotos(photos);
+  };
+
+  var onPhotoClick = function (target) {
+    for (var i = 0; i < ARRAY_PHOTOS_LENGTH; i++) {
+      if (photos[i].url === target) {
+        window.bigPhoto.showBigPhoto(photos[i]);
+
+        break;
+      }
+    }
+  };
+
+  var onPopularChange = window.utils.debounce(function () {
+    renderPhotos(photos.slice().sort(function (a, b) {
+      return b.likes - a.likes;
+    }));
+  }, 500);
+
+  var onNewChange = window.utils.debounce(function () {
+    renderPhotos(photos);
+  }, 500);
+
+  var onMostCommentChange = window.utils.debounce(function () {
+    renderPhotos(photos.slice().sort(function (a, b) {
+      return b.comments.length - a.comments.length;
+    }));
+  }, 500);
+
   var renderSmallPhoto = function (photo) {
     var photosTemplate = document.querySelector('#picture').content.querySelector('.picture__link');
     var photoElement = photosTemplate.cloneNode(true);
@@ -34,28 +66,6 @@
     sortFilters.classList.remove('img-filters--inactive');
   };
 
-  var onPageLoad = function (data) {
-    data.pop();
-    photos = data;
-    renderPhotos(photos);
-  };
-
-  var onPopularChange = window.utils.debounce(function () {
-    renderPhotos(photos.slice().sort(function (a, b) {
-      return b.likes - a.likes;
-    }));
-  }, 500);
-
-  var onNewChange = window.utils.debounce(function () {
-    renderPhotos(photos);
-  }, 500);
-
-  var onMostCommentChange = window.utils.debounce(function () {
-    renderPhotos(photos.slice().sort(function (a, b) {
-      return b.comments.length - a.comments.length;
-    }));
-  }, 500);
-
   var renderAllPhotos = function () {
     window.backend.load(onPageLoad, window.utils.onPageShowError);
     sortFilters.querySelector('.img-filters__button').classList.remove('img-filters__button--active');
@@ -63,25 +73,13 @@
 
   allPhotos.addEventListener('click', function (evt) {
     if (evt.target.className === 'picture__img') {
-      for (var i = 0; i < ARRAY_PHOTOS_LENGTH; i++) {
-        if (photos[i].url === evt.target.attributes.src.value) {
-          window.bigPhoto.showBigPhoto(photos[i]);
-
-          break;
-        }
-      }
+      onPhotoClick(evt.target.attributes.src.value);
     }
   });
 
   allPhotos.addEventListener('keydown', function (evt) {
     if (evt.keyCode === window.uploadPhotos.KeyCode.ENTER && evt.target.className === 'picture__link') {
-      for (var i = 0; i < ARRAY_PHOTOS_LENGTH; i++) {
-        if (photos[i].url === evt.target.firstElementChild.attributes.src.value) {
-          window.bigPhoto.showBigPhoto(photos[i]);
-
-          break;
-        }
-      }
+      onPhotoClick(evt.target.firstElementChild.attributes.src.value);
     }
   });
 
