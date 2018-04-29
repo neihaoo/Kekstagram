@@ -37,7 +37,6 @@
       } else {
         hashTagsCounts[currentHashTag]++;
       }
-
       if (hashTagsCounts[currentHashTag] > 1) {
         showErrorMessage('Один и тот же хэш-тег не может быть использован дважды');
 
