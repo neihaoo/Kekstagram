@@ -3,6 +3,7 @@
 (function () {
   var loadData = function (onLoad, onError) {
     var URL = 'https://js.dump.academy/kekstagram/data';
+
     var xhr = new XMLHttpRequest();
 
     xhr.responseType = 'json';
@@ -30,6 +31,7 @@
 
   var sendData = function (data, onLoad, onError) {
     var URL = 'https://js.dump.academy/kekstagram';
+
     var xhr = new XMLHttpRequest();
 
     xhr.responseType = 'json';
