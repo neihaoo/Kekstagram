@@ -11,6 +11,7 @@
   var onPageLoad = function (data) {
     data.length = ARRAY_PHOTOS_LENGTH;
     photos = data;
+
     renderPhotos(photos);
   };
 
@@ -67,8 +68,9 @@
   };
 
   var renderAllPhotos = function () {
-    window.backend.load(onPageLoad, window.utils.onPageShowError);
     sortFilters.querySelector('.img-filters__button').classList.remove('img-filters__button--active');
+
+    window.backend.load(onPageLoad, window.utils.onPageShowError);
   };
 
   allPhotos.addEventListener('click', function (evt) {
@@ -94,24 +96,25 @@
 
     switch (evt.target.id) {
       case 'filter-popular':
-        onPopularChange();
         evt.target.classList.add('img-filters__button--active');
+
+        onPopularChange();
 
         break;
       case 'filter-new':
-        onNewChange();
         evt.target.classList.add('img-filters__button--active');
+
+        onNewChange();
 
         break;
       case 'filter-discussed':
-        onMostCommentChange();
         evt.target.classList.add('img-filters__button--active');
+
+        onMostCommentChange();
 
         break;
     }
   });
 
   renderAllPhotos();
-
-  window.photos = photos;
 })();
