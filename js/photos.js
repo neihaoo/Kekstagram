@@ -11,7 +11,6 @@
   var onPageLoad = function (data) {
     data.length = ARRAY_PHOTOS_LENGTH;
     photos = data;
-
     renderPhotos(photos);
   };
 
@@ -68,9 +67,8 @@
   };
 
   var renderAllPhotos = function () {
-    sortFilters.querySelector('.img-filters__button').classList.remove('img-filters__button--active');
-
     window.backend.load(onPageLoad, window.utils.onPageShowError);
+    sortFilters.querySelector('.img-filters__button').classList.remove('img-filters__button--active');
   };
 
   allPhotos.addEventListener('click', function (evt) {
@@ -96,21 +94,18 @@
 
     switch (evt.target.id) {
       case 'filter-popular':
-        evt.target.classList.add('img-filters__button--active');
-
         onPopularChange();
+        evt.target.classList.add('img-filters__button--active');
 
         break;
       case 'filter-new':
-        evt.target.classList.add('img-filters__button--active');
-
         onNewChange();
+        evt.target.classList.add('img-filters__button--active');
 
         break;
       case 'filter-discussed':
-        evt.target.classList.add('img-filters__button--active');
-
         onMostCommentChange();
+        evt.target.classList.add('img-filters__button--active');
 
         break;
     }
