@@ -13,12 +13,12 @@
       if (xhr.status === 200) {
         onLoad(xhr.response);
       } else {
-        onError('Ошибка закгрузки данных. Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
+        onError('Ошибка закгрузки данных. Статус ответа: ' + xhr.status + ' ' + xhr.statusText + '.');
       }
     });
 
     xhr.addEventListener('error', function () {
-      onError('Произошла ошибка соединения');
+      onError('Произошла ошибка соединения.');
     });
 
     xhr.addEventListener('timeout', function () {
