@@ -1,6 +1,9 @@
 'use strict';
 
 (function () {
+
+  var FILE_TYPES = ['jpg', 'jpeg', 'png', 'webp'];
+
   var KeyCode = {
     ESC: 27,
     ENTER: 13,
@@ -85,26 +88,7 @@
     previewPhoto.setAttribute('style', 'filter: ' + window.effects.changeEffects(previewPhoto));
   };
 
-  var showPreviewPhoto = function () {
-    var file = uploadPhotosOpen.files[0];
-    var reader = new FileReader();
-
-    reader.addEventListener('load', function () {
-      previewPhoto.src = reader.result;
-
-      effectsPreview.forEach(function (el) {
-        el.setAttribute('style', 'background-image: url(' + previewPhoto.src + ')');
-      });
-    });
-
-    if (file) {
-      reader.readAsDataURL(file);
-    }
-  };
-
   var showUploadPhoto = function () {
-    showPreviewPhoto();
-
     sliderBar.parentElement.classList.add('hidden');
     uploadPhotos.querySelector('.img-upload__overlay').classList.remove('hidden');
 
@@ -113,6 +97,33 @@
     uploadPhotos.querySelector('.img-upload__resize').setAttribute('style', 'z-index: 1');
     document.querySelector('body').classList.add('modal-open');
     document.addEventListener('keydown', onUploadPhotoEscPress);
+  };
+
+  var showPreviewPhoto = function () {
+    var file = uploadPhotosOpen.files[0];
+    var fileName = file.name.toLowerCase();
+
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+
+    if (matches) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        previewPhoto.src = reader.result;
+
+        effectsPreview.forEach(function (el) {
+          el.setAttribute('style', 'background-image: url(' + previewPhoto.src + ')');
+        });
+      });
+
+      reader.readAsDataURL(file);
+
+      showUploadPhoto();
+    } else {
+      window.utils.onPageShowError('Неверный формат. Допустимые форматы: ' + FILE_TYPES.join(', ') + '.');
+    }
   };
 
   var hideUploadPhoto = function () {
@@ -134,7 +145,7 @@
   };
 
   uploadPhotosOpen.addEventListener('change', function () {
-    showUploadPhoto();
+    showPreviewPhoto();
   });
 
   uploadPhotosClose.addEventListener('click', function () {

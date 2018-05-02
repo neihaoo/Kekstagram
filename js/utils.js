@@ -41,7 +41,7 @@
 
     setTimeout(function () {
       node.parentNode.removeChild(node);
-    }, 2000);
+    }, 3000);
   };
 
   window.utils = {
