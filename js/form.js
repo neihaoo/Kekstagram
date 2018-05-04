@@ -25,8 +25,6 @@
     }
     if (hashTagsArray.length > HashTags.MAX_COUNT) {
       showErrorMessage('Количество хэш-тегов должно быть не больше ' + HashTags.MAX_COUNT);
-
-      return;
     }
 
     for (var i = 0; i < hashTagsArray.length; i++) {
@@ -40,20 +38,12 @@
 
       if (hashTagsCounts[currentHashTag] > 1) {
         showErrorMessage('Один и тот же хэш-тег не может быть использован дважды');
-
-        return;
       } else if (hashTagsArray[i][0] !== '#') {
         showErrorMessage('Каждый хэш-тег должен начинаться с символа # (решётка)');
-
-        return;
       } else if (hashTagsArray[i].length < HashTags.MIN_LENGTH) {
         showErrorMessage('Хэш-тег не может состоять только из одного символа # (решётка)');
-
-        return;
       } else if (hashTagsArray[i].length > HashTags.MAX_LENGTH) {
         showErrorMessage('Хэш-тег должен состоять максимум из ' + HashTags.MAX_LENGTH + '-х символов');
-
-        return;
       }
     }
   };
