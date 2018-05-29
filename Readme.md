@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url]
 
 * Студент: [Павел Рябкин](https://up.htmlacademy.ru/javascript/13/user/505565).
-* Наставник: [Виталий Усик] (https://htmlacademy.ru/profile/id235226).
+* Наставник: [Виталий Усик](https://htmlacademy.ru/profile/id235226).
 
 ---
 
